@@ -1,0 +1,42 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net5.0-windows</TargetFramework>
+		<RootNamespace>cnzhnet.music_decrypt</RootNamespace>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net5.0-windows'">
+		<OutputType>WinExe</OutputType>
+		<UseWindowsForms>true</UseWindowsForms>
+		<DefineConstants>platform_windows</DefineConstants>
+    <RuntimeIdentifier>win-x86</RuntimeIdentifier>
+    <PublishSingleFile>true</PublishSingleFile>
+	</PropertyGroup>
+
+  <PropertyGroup Condition="'$(RuntimeIdentifier)' == 'win-x64'">
+    <AssemblyName>cmdt-windows-x64</AssemblyName>
+    <PublishSingleFile>true</PublishSingleFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(RuntimeIdentifier)' == 'win-x86'">
+    <AssemblyName>cmdt-windows-x86</AssemblyName>
+    <PublishSingleFile>true</PublishSingleFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(RuntimeIdentifier)' == 'linux-x64'">
+    <AssemblyName>cmdt-linux-x64</AssemblyName>
+    <PublishSingleFile>true</PublishSingleFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(RuntimeIdentifier)' == 'osx-x64'">
+    <AssemblyName>cmdt-osx-x64</AssemblyName>
+    <PublishSingleFile>true</PublishSingleFile>
+  </PropertyGroup>
+  
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net5.0'">
+		<OutputType>Exe</OutputType>
+		<RuntimeIdentifier>linux-x64</RuntimeIdentifier>
+		<RuntimeIdentifiers>linux-x64;rhel-x64;osx-x64</RuntimeIdentifiers>
+	</PropertyGroup>
+
+</Project>
