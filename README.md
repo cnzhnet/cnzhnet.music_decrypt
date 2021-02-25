@@ -1,2 +1,3 @@
-# cnzhnet.music_decrypt
-加密无损音频解密工具，暂只实现酷我音乐 kwm 格式的解密.
+酷我音乐 kwm 加密音频解密工具，可用此源码扩展其它 app 加密格式的支持.    
+## 目录说明    
+- Publish-bin
