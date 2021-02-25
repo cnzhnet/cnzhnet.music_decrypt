@@ -4,5 +4,5 @@
 ## 开发环境说明  
 IDE:  Visual Studio 2019 16.8.6   
 语言: Visual C#  
-框架: .NET 5.0   
+框架: .NET 5.0 跨平台   
 其它依懒: 无  
