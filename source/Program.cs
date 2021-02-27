@@ -33,7 +33,7 @@ namespace cnzhnet.music_decrypt
             string ver = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version?.ToString();
             Console.WriteLine($"  版本：{ver}");
             Console.Write("----------------------------\r\n");
-            Console.WriteLine("  source <源目录>\t| 用于指定加密音频所有目录(完整路径)");
+            Console.WriteLine("  source <源目录>\t| 用于指定加密音频所在目录(完整路径)");
             Console.WriteLine("  output <输出目录>\t| 用于指定解密结果的输出目录");
             Console.WriteLine("  -d\t\t\t| 执行解密任务");
             Console.WriteLine("  clear\t\t\t| 清屏");
