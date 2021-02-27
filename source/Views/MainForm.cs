@@ -41,7 +41,7 @@ namespace cnzhnet.music_decrypt.Views
                 return;
             syncContext = SynchronizationContext.Current;
             // 在此注册支持的音频流解密器.
-            StreamDecrypter.RegisterDecrypter(".kwm", typeof(KwmStreamDecrypter));
+            AudioDecrypter.RegisterDecrypter(".kwm", typeof(KwmAudioDecrypter));
             // ... 其它类型的音频支持扩展后在此注册.
         }
         /// <summary>
@@ -103,11 +103,11 @@ namespace cnzhnet.music_decrypt.Views
                 return;
             }
             DecryptAudioItem item;
-            IStreamDecrypter decrypter;
+            IAudioDecrypter decrypter;
             do  // 若所添加的加密音频未被支持则应忽略之并递进处理下一个.
             {
                 item = audioItems[processed];
-                decrypter = StreamDecrypter.GetDecrypter(Path.GetExtension(item.File));
+                decrypter = AudioDecrypter.GetDecrypter(Path.GetExtension(item.File));
                 if (decrypter == null)
                 {
                     item.Status = "不支持.";
@@ -123,16 +123,16 @@ namespace cnzhnet.music_decrypt.Views
             item.Status = "解密中...";
             if (File.Exists(item.Output))
                 File.Delete(item.Output);
-            decrypter.Output = File.Open(item.Output, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read);
+            decrypter.Output = File.Open(item.Output, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read);
             decrypter.Output.Position = 0;
-            decrypter.Decrypt(item.Id); // 解密音频.
+            decrypter.Decrypt(item); // 解密音频.
         }
         /// <summary>
         /// 解密码完成的事件处理程序.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Decrypter_Completed(IStreamDecrypter sender, CompletedEventArgs e)
+        private void Decrypter_Completed(IAudioDecrypter sender, CompletedEventArgs e)
         {   // 释放为目标解密器打开的源及输出目标流.
             sender.Source?.Close();
             sender.Source?.Dispose();
@@ -142,19 +142,25 @@ namespace cnzhnet.music_decrypt.Views
             sender.Output?.Dispose();
             sender.Output = null;
             // 更新当前解密项的列表中的显示状态.
-            DecryptAudioItem item = audioItems.Where(p => p.Id == e.Id).First();
+            DecryptAudioItem item = e.Item;
             int index = audioItems.IndexOf(item);
             if (item != null)
             {
                 if (e.Success)
                 {
                     item.Status = "已解密";
-                    File.Move(item.Output, $"{Path.Combine(Path.GetDirectoryName(item.Output), Path.GetFileNameWithoutExtension(item.File))}.flac", true);
+                    if (!string.IsNullOrEmpty(item.OutputExt))
+                    {
+                        string tmpPath = item.Output;
+                        item.Output = $"{Path.Combine(Path.GetDirectoryName(tmpPath), Path.GetFileNameWithoutExtension(item.File))}{item.OutputExt}";
+                        File.Move(tmpPath, item.Output, true);
+                    }
                 }
                 else
                 {
                     item.Status = $"解密错误：{e.Error.Message}";
                     File.Delete(item.Output);
+                    item.Output = null;
                 }
             }
             syncContext.Send((state) => {

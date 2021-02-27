@@ -46,6 +46,7 @@ namespace cnzhnet.music_decrypt.Views
             this.ColumnStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnFile = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnPath = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.OutextColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.bottomPanel.SuspendLayout();
             this.contentPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -165,7 +166,8 @@ namespace cnzhnet.music_decrypt.Views
             this.ColumnId,
             this.ColumnStatus,
             this.ColumnFile,
-            this.ColumnPath});
+            this.ColumnPath,
+            this.OutextColumn});
             this.dataGridView1.Location = new System.Drawing.Point(12, 31);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
@@ -230,6 +232,14 @@ namespace cnzhnet.music_decrypt.Views
             this.ColumnPath.Name = "ColumnPath";
             this.ColumnPath.ReadOnly = true;
             // 
+            // OutextColumn
+            // 
+            this.OutextColumn.DataPropertyName = "OutputExt";
+            this.OutextColumn.HeaderText = "输出音频格式";
+            this.OutextColumn.Name = "OutextColumn";
+            this.OutextColumn.ReadOnly = true;
+            this.OutextColumn.Visible = false;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
@@ -267,6 +277,7 @@ namespace cnzhnet.music_decrypt.Views
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnStatus;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnFile;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnPath;
+        private System.Windows.Forms.DataGridViewTextBoxColumn OutextColumn;
     }
 }
 #endif

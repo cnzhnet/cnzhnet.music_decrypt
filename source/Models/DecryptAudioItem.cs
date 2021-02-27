@@ -42,6 +42,11 @@ namespace cnzhnet.music_decrypt.Models
         public string Output { get; set; }
 
         /// <summary>
+        /// 表示解密后输出的音频文件扩展名（带 .）
+        /// </summary>
+        public string OutputExt { get; set; }
+
+        /// <summary>
         /// 表示处理状态.
         /// </summary>
         public string Status { get; set; }

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\我的Windows\\Documents\\Visual Studio 2019\\Projects\\cnzhnet.music_decrypt\\cnzhnet.music_decrypt.csproj": {}
+    "D:\\我的Windows\\Documents\\Visual Studio 2019\\Projects\\cnzhnet.music_decrypt\\source\\cnzhnet.music_decrypt.csproj": {}
   },
   "projects": {
-    "D:\\我的Windows\\Documents\\Visual Studio 2019\\Projects\\cnzhnet.music_decrypt\\cnzhnet.music_decrypt.csproj": {
+    "D:\\我的Windows\\Documents\\Visual Studio 2019\\Projects\\cnzhnet.music_decrypt\\source\\cnzhnet.music_decrypt.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\我的Windows\\Documents\\Visual Studio 2019\\Projects\\cnzhnet.music_decrypt\\cnzhnet.music_decrypt.csproj",
+        "projectUniqueName": "D:\\我的Windows\\Documents\\Visual Studio 2019\\Projects\\cnzhnet.music_decrypt\\source\\cnzhnet.music_decrypt.csproj",
         "projectName": "cmdt-windows-x86",
-        "projectPath": "D:\\我的Windows\\Documents\\Visual Studio 2019\\Projects\\cnzhnet.music_decrypt\\cnzhnet.music_decrypt.csproj",
+        "projectPath": "D:\\我的Windows\\Documents\\Visual Studio 2019\\Projects\\cnzhnet.music_decrypt\\source\\cnzhnet.music_decrypt.csproj",
         "packagesPath": "C:\\Users\\cnzhnet\\.nuget\\packages\\",
-        "outputPath": "D:\\我的Windows\\Documents\\Visual Studio 2019\\Projects\\cnzhnet.music_decrypt\\obj\\",
+        "outputPath": "D:\\我的Windows\\Documents\\Visual Studio 2019\\Projects\\cnzhnet.music_decrypt\\source\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\cnzhnet\\AppData\\Roaming\\NuGet\\NuGet.Config",

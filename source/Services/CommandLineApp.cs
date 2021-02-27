@@ -23,7 +23,7 @@ namespace cnzhnet.music_decrypt.Services
         {
             audioItems = new List<DecryptAudioItem>();
             // 注册命令行工具的解密音频支持.
-            StreamDecrypter.RegisterDecrypter(".kwm", typeof(KwmStreamDecrypter));
+            AudioDecrypter.RegisterDecrypter(".kwm", typeof(KwmAudioDecrypter));
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace cnzhnet.music_decrypt.Services
             }
             audioItems.Clear();
             DirectoryInfo dir = new DirectoryInfo(sourcePath);
-            List<string> supported = StreamDecrypter.GetSupportedExtensions();
+            List<string> supported = AudioDecrypter.GetSupportedExtensions();
             FileInfo[] files = dir.GetFiles();
             int total = 0;
             foreach (FileInfo af in files)
@@ -88,7 +88,7 @@ namespace cnzhnet.music_decrypt.Services
             if (!Directory.Exists(outputPath))
                 Directory.CreateDirectory(outputPath);
 
-            IStreamDecrypter decrypter = null;
+            IAudioDecrypter decrypter = null;
             int processed = 0;
             string extension;
             for (int i = 0; i < audioItems.Count; ++i)
@@ -96,18 +96,23 @@ namespace cnzhnet.music_decrypt.Services
                 try
                 {
                     extension = Path.GetExtension(audioItems[i].File).ToLower();
-                    decrypter = StreamDecrypter.GetDecrypter(extension);
+                    decrypter = AudioDecrypter.GetDecrypter(extension);
                     if (decrypter == null)
                         continue;
                     decrypter.UseMultithreaded = false;
-                    audioItems[i].Output = Path.Combine(outputPath, $"{Path.GetFileNameWithoutExtension(audioItems[i].File)}.flac");
+                    audioItems[i].Output = Path.Combine(outputPath, $"{Path.GetFileNameWithoutExtension(audioItems[i].File)}.tmp");
                     decrypter.Source = File.Open(audioItems[i].FullPath, FileMode.Open, FileAccess.Read, FileShare.Read);
                     if (File.Exists(audioItems[i].Output))
                         File.Delete(audioItems[i].Output);
-                    decrypter.Output = File.Open(audioItems[i].Output, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read);
+                    decrypter.Output = File.Open(audioItems[i].Output, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read);
                     decrypter.Output.Position = 0;
-                    decrypter.Decrypt(audioItems[i].Id);
-                    decrypter.Output.Flush();
+                    decrypter.Decrypt(audioItems[i]);
+                    if (!string.IsNullOrEmpty(audioItems[i].OutputExt)) 
+                    {
+                        extension = audioItems[i].Output;
+                        audioItems[i].Output = Path.Combine(outputPath, $"{Path.GetFileNameWithoutExtension(audioItems[i].File)}{audioItems[i].OutputExt}");
+                        File.Move(extension, audioItems[i].Output, true);
+                    }
                     processed++;
                     Console.WriteLine($"[已解密音频]: {Path.GetFileName(audioItems[i].Output)}");
                 }
