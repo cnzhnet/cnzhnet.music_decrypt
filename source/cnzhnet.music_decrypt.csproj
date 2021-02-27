@@ -38,5 +38,20 @@
 		<RuntimeIdentifier>linux-x64</RuntimeIdentifier>
 		<RuntimeIdentifiers>linux-x64;rhel-x64;osx-x64</RuntimeIdentifiers>
 	</PropertyGroup>
+  
+	<ItemGroup>
+	  <Compile Update="DefaultResource.Designer.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>DefaultResource.resx</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+  
+	<ItemGroup>
+	  <EmbeddedResource Update="DefaultResource.resx">
+	    <Generator>ResXFileCodeGenerator</Generator>
+	    <LastGenOutput>DefaultResource.Designer.cs</LastGenOutput>
+	  </EmbeddedResource>
+	</ItemGroup>
 
 </Project>

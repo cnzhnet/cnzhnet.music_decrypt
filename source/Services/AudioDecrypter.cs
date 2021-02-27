@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,15 +16,18 @@ namespace cnzhnet.music_decrypt.Services
         /// <summary>
         /// 用于描述支持的输出目标音频格式的 PE 头信息.
         /// </summary>
-        private static readonly Dictionary<string, byte[]> audioHeaders = new Dictionary<string, byte[]> {
-            { ".mp3",  new byte[3] { 0x49, 0x44, 0x33 } },
-            { ".flac", new byte[4] { 0x66, 0x4c, 0x61, 0x43 } },
-            { ".ogg",  new byte[4] { 0x4f, 0x67, 0x67, 0x53 } },
-            { ".m4a",  new byte[4] { 0x66, 0x74, 0x79, 0x70 } },
-            { ".wav",  new byte[4] { 0x52, 0x49, 0x46, 0x46 } },
-            { ".wma",  new byte[16] { 0x30, 0x26, 0xb2, 0x75, 0x8e, 0x66, 0xcf, 0x11, 0xa6, 0xd9, 0x00, 0xaa, 0x00, 0x62, 0xce, 0x6c }}
-        };
-        protected object _doWorking;
+        private static readonly List<AudioPeHeader> audioHeaders = new List<AudioPeHeader>(new AudioPeHeader[] { 
+            new AudioPeHeader(".aac", new byte[2] { 0xff, 0xf1 }),
+            new AudioPeHeader(".aac", new byte[2] { 0xff, 0xf9 }),
+            new AudioPeHeader(".amr", new byte[5] { 0x23, 0x21, 0x41, 0x4d, 0x52 }),
+            new AudioPeHeader(".mp3",  new byte[3] { 0x49, 0x44, 0x33 }),
+            new AudioPeHeader(".flac", new byte[4] { 0x66, 0x4c, 0x61, 0x43 }),
+            new AudioPeHeader(".ogg",  new byte[4] { 0x4f, 0x67, 0x67, 0x53 }),
+            new AudioPeHeader(".m4a",  new byte[4] { 0x66, 0x74, 0x79, 0x70 }),
+            new AudioPeHeader(".wav",  new byte[4] { 0x52, 0x49, 0x46, 0x46 }),
+            new AudioPeHeader(".wma",  new byte[16] { 0x30, 0x26, 0xb2, 0x75, 0x8e, 0x66, 0xcf, 0x11, 0xa6, 0xd9, 0x00, 0xaa, 0x00, 0x62, 0xce, 0x6c })
+        });
+        private object _doWorking;
 
         /// <summary>
         /// 创建一个 <see cref="AudioDecrypter"/> 的对象实例.
@@ -64,24 +67,10 @@ namespace cnzhnet.music_decrypt.Services
         /// 用于触发 <see cref="Completed"/> 事件.
         /// </summary>
         /// <param name="e"></param>
-        protected virtual void OnCompleted(CompletedEventArgs e) => Completed?.Invoke(this, e);
-
-        /// <summary>
-        /// 比较两个字节数组，若所有元素完全相同则返回 true，否则返回 false .
-        /// </summary>
-        /// <param name="array1">比较的第一个数组</param>
-        /// <param name="array2">比较的第二个数组</param>
-        /// <returns></returns>
-        protected bool CompareBytes(byte[] array1, byte[] array2)
+        protected virtual void OnCompleted(CompletedEventArgs e)
         {
-            if (array1.Length != array2.Length)
-                return false;
-            for (int i = 0; i < array1.Length; ++i)
-            {
-                if (array1[i] != array2[i])
-                    return false;
-            }
-            return true;
+            Interlocked.Exchange(ref _doWorking, false);
+            Completed?.Invoke(this, e);
         }
 
         /// <summary>
@@ -108,6 +97,18 @@ namespace cnzhnet.music_decrypt.Services
         }
 
         /// <summary>
+        /// 从指定的流中读取一个 32 位整数.
+        /// </summary>
+        /// <param name="stream">从此流中读取.</param>
+        /// <returns></returns>
+        protected int ReadInt32(Stream stream)
+        {
+            byte[] bytes = new byte[4];
+            stream.Read(bytes, 0, bytes.Length);
+            return BitConverter.ToInt32(bytes, 0);
+        }
+
+        /// <summary>
         /// 根据给定的音频文件数据获取音频的格式扩展名.
         /// </summary>
         /// <param name="buffers">包含音频文件数据的字节数组.</param>
@@ -115,12 +116,12 @@ namespace cnzhnet.music_decrypt.Services
         /// <returns></returns>
         protected string GetAudioExt(byte[] buffers, int offset)
         {
-            foreach (KeyValuePair<string, byte[]> head in audioHeaders)
+            foreach (AudioPeHeader pe in audioHeaders)
             {
-                if (head.Key == ".m4a")
+                if (pe.Ext == ".m4a")
                     offset += 4;
-                if (BytesEqual(head.Value, 0, buffers, offset, head.Value.Length))
-                    return head.Key;
+                if (BytesEqual(pe.Head, 0, buffers, offset, pe.Head.Length))
+                    return pe.Ext;
             }
             return string.Empty;
         }
@@ -148,13 +149,19 @@ namespace cnzhnet.music_decrypt.Services
 
             Interlocked.Exchange(ref _doWorking, true);
             if (UseMultithreaded)
+            {
                 Task.Factory.StartNew(() => DoDecrypt(item));
+            }
             else
+            {
                 DoDecrypt(item);
+                Interlocked.Exchange(ref _doWorking, false);
+            }
         }
 
         #region 静态成员
-        private static Dictionary<string, Type> decrypters = new Dictionary<string, Type>();
+        private static List<AudioSupported> decrypters = new List<AudioSupported>();
+        private static Dictionary<Type, IAudioDecrypter> pool = new Dictionary<Type, IAudioDecrypter>();
 
         /// <summary>
         /// 获取支持的解密器.
@@ -163,11 +170,20 @@ namespace cnzhnet.music_decrypt.Services
         /// <returns></returns>
         public static IAudioDecrypter GetDecrypter(string extension)
         {
-            Type t = null;
-            if (!decrypters.TryGetValue(extension, out t))
+            AudioSupported supported = decrypters.Where(p => p.Extension == extension).FirstOrDefault();
+            if (supported == null)
                 return null;
-
-            return Activator.CreateInstance(t) as IAudioDecrypter;
+            IAudioDecrypter decrypter = null;
+            lock (pool)
+            {
+                if (!pool.TryGetValue(supported.DecrypterType, out decrypter))
+                {
+                    decrypter = Activator.CreateInstance(supported.DecrypterType) as IAudioDecrypter;
+                    if (decrypter != null)
+                        pool.Add(supported.DecrypterType, decrypter);
+                }
+            }
+            return decrypter;
         }
 
         /// <summary>
@@ -175,27 +191,18 @@ namespace cnzhnet.music_decrypt.Services
         /// </summary>
         /// <param name="extension">加密音频文件的扩展名</param>
         /// <param name="decrypterType">此类加密音频所对应的解密器类型.</param>
-        public static void RegisterDecrypter(string extension, Type decrypterType)
+        public static void RegisterDecrypter(AudioSupported supported)
         {
-            if (string.IsNullOrEmpty(extension))
+            if (supported == null)
                 return;
-            if (decrypters.ContainsKey(extension))
-                return;
-            decrypters.Add(extension, decrypterType);
+            decrypters.Add(supported);
         }
 
         /// <summary>
         /// 获取受支持的解密音频文件扩展名.
         /// </summary>
         /// <returns></returns>
-        public static List<string> GetSupportedExtensions()
-        {
-            if (decrypters.Count < 1)
-                return new List<string>();
-            string[] keys = new string[decrypters.Keys.Count];
-            decrypters.Keys.CopyTo(keys, 0);
-            return new List<string>(keys);
-        }
+        public static AudioSupported[] GetSupportedAudios() => decrypters.ToArray();
         #endregion
     }
 }

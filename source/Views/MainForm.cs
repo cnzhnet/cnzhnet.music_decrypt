@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using cnzhnet.music_decrypt.Models;
@@ -41,8 +41,24 @@ namespace cnzhnet.music_decrypt.Views
                 return;
             syncContext = SynchronizationContext.Current;
             // 在此注册支持的音频流解密器.
-            AudioDecrypter.RegisterDecrypter(".kwm", typeof(KwmAudioDecrypter));
-            // ... 其它类型的音频支持扩展后在此注册.
+            AudioDecrypter.RegisterDecrypter(AudioSupported.Create(".kwm", "酷我音乐", typeof(KwmAudioDecrypter)));
+            AudioDecrypter.RegisterDecrypter(AudioSupported.Create(".ncm", "网易云音乐", typeof(NcmAudioDecrypter)));
+            AudioDecrypter.RegisterDecrypter(AudioSupported.Create(".qmc0", "QQ音乐", typeof(QmcAudioDecrypter)));
+            AudioDecrypter.RegisterDecrypter(AudioSupported.Create(".qmc3", "QQ音乐", typeof(QmcAudioDecrypter)));
+            AudioDecrypter.RegisterDecrypter(AudioSupported.Create(".mflac", "QQ音乐", typeof(QmcAudioDecrypter)));
+            AudioDecrypter.RegisterDecrypter(AudioSupported.Create(".qmcflac", "QQ音乐", typeof(QmcAudioDecrypter)));
+            AudioDecrypter.RegisterDecrypter(AudioSupported.Create(".kgm", "酷狗音乐", typeof(KgmAudioDecrypter)));
+            AudioDecrypter.RegisterDecrypter(AudioSupported.Create(".vpr", "酷狗音乐", typeof(KgmAudioDecrypter)));
+
+            AudioSupported[] supporteds = AudioDecrypter.GetSupportedAudios();
+            StringBuilder filterLeft = new StringBuilder($"{supporteds[0].Manufacturer}(*{supporteds[0].Extension})");
+            StringBuilder filterRight = new StringBuilder($"*{supporteds[0].Extension}");
+            for (int i = 1; i < supporteds.Length; ++i)
+            {
+                filterLeft.Append($";{supporteds[i].Manufacturer}(*{supporteds[i].Extension})");
+                filterRight.Append($";*{supporteds[i].Extension}");
+            }
+            openFileDialog1.Filter = $"{filterLeft}|{filterRight}";
         }
         /// <summary>
         /// 添加文件.
@@ -117,12 +133,14 @@ namespace cnzhnet.music_decrypt.Views
             }
             while (decrypter == null);
             // 准备解密支持的加密音频.
+            decrypter.Completed -= Decrypter_Completed;
             decrypter.Completed += Decrypter_Completed;
             decrypter.Source = File.Open(item.FullPath, FileMode.Open, FileAccess.Read, FileShare.Read);
             item.Output = $"{Path.Combine(outputDir.Text, Path.GetFileNameWithoutExtension(item.File))}.tmp";
             item.Status = "解密中...";
             if (File.Exists(item.Output))
                 File.Delete(item.Output);
+            dataGridView1.InvalidateRow(processed);
             decrypter.Output = File.Open(item.Output, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read);
             decrypter.Output.Position = 0;
             decrypter.Decrypt(item); // 解密音频.

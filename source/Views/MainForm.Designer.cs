@@ -39,14 +39,14 @@ namespace cnzhnet.music_decrypt.Views
             this.outputDir = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.label1 = new System.Windows.Forms.Label();
-            this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
-            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.ColumnId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnFile = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnPath = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.OutextColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.label1 = new System.Windows.Forms.Label();
+            this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.bottomPanel.SuspendLayout();
             this.contentPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -177,28 +177,6 @@ namespace cnzhnet.music_decrypt.Views
             this.dataGridView1.Size = new System.Drawing.Size(598, 256);
             this.dataGridView1.TabIndex = 1;
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 9);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(104, 17);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "加密的音频文件：";
-            // 
-            // folderBrowserDialog1
-            // 
-            this.folderBrowserDialog1.Description = "选择解密的输出目录.";
-            this.folderBrowserDialog1.RootFolder = System.Environment.SpecialFolder.MyComputer;
-            this.folderBrowserDialog1.ShowNewFolderButton = false;
-            // 
-            // openFileDialog1
-            // 
-            this.openFileDialog1.AddExtension = false;
-            this.openFileDialog1.Filter = "酷我加密音频|*.kwm";
-            this.openFileDialog1.Multiselect = true;
-            this.openFileDialog1.Title = "选择要解密的音频文件";
-            // 
             // ColumnId
             // 
             this.ColumnId.DataPropertyName = "Id";
@@ -240,6 +218,28 @@ namespace cnzhnet.music_decrypt.Views
             this.OutextColumn.ReadOnly = true;
             this.OutextColumn.Visible = false;
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(12, 9);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(104, 17);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "加密的音频文件：";
+            // 
+            // folderBrowserDialog1
+            // 
+            this.folderBrowserDialog1.Description = "选择解密的输出目录.";
+            this.folderBrowserDialog1.RootFolder = System.Environment.SpecialFolder.MyComputer;
+            this.folderBrowserDialog1.ShowNewFolderButton = false;
+            // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.AddExtension = false;
+            this.openFileDialog1.Filter = "酷我(*.kwm);网易云音乐(*.ncm)|*.kwm;*.ncm";
+            this.openFileDialog1.Multiselect = true;
+            this.openFileDialog1.Title = "选择要解密的音频文件";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
@@ -249,7 +249,7 @@ namespace cnzhnet.music_decrypt.Views
             this.Controls.Add(this.bottomPanel);
             this.MaximizeBox = false;
             this.Name = "MainForm";
-            this.Text = "酷我音乐无损加密音频破解器";
+            this.Text = "CMDT音频解密";
             this.bottomPanel.ResumeLayout(false);
             this.contentPanel.ResumeLayout(false);
             this.contentPanel.PerformLayout();

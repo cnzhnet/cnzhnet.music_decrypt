@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using cnzhnet.music_decrypt.Models;
-using cnzhnet.music_decrypt.Services;
 
 namespace cnzhnet.music_decrypt.Services
 {
@@ -23,7 +22,14 @@ namespace cnzhnet.music_decrypt.Services
         {
             audioItems = new List<DecryptAudioItem>();
             // 注册命令行工具的解密音频支持.
-            AudioDecrypter.RegisterDecrypter(".kwm", typeof(KwmAudioDecrypter));
+            AudioDecrypter.RegisterDecrypter(AudioSupported.Create(".kwm", "酷我音乐", typeof(KwmAudioDecrypter)));
+            AudioDecrypter.RegisterDecrypter(AudioSupported.Create(".ncm", "网易云音乐", typeof(NcmAudioDecrypter)));
+            AudioDecrypter.RegisterDecrypter(AudioSupported.Create(".qmc0", "QQ音乐", typeof(QmcAudioDecrypter)));
+            AudioDecrypter.RegisterDecrypter(AudioSupported.Create(".qmc3", "QQ音乐", typeof(QmcAudioDecrypter)));
+            AudioDecrypter.RegisterDecrypter(AudioSupported.Create(".mflac", "QQ音乐", typeof(QmcAudioDecrypter)));
+            AudioDecrypter.RegisterDecrypter(AudioSupported.Create(".qmcflac", "QQ音乐", typeof(QmcAudioDecrypter)));
+            AudioDecrypter.RegisterDecrypter(AudioSupported.Create(".kgm", "酷狗音乐", typeof(KgmAudioDecrypter)));
+            AudioDecrypter.RegisterDecrypter(AudioSupported.Create(".vpr", "酷狗音乐", typeof(KgmAudioDecrypter)));
         }
 
         /// <summary>
@@ -53,12 +59,12 @@ namespace cnzhnet.music_decrypt.Services
             }
             audioItems.Clear();
             DirectoryInfo dir = new DirectoryInfo(sourcePath);
-            List<string> supported = AudioDecrypter.GetSupportedExtensions();
+            AudioSupported[] supported = AudioDecrypter.GetSupportedAudios();
             FileInfo[] files = dir.GetFiles();
             int total = 0;
             foreach (FileInfo af in files)
             {
-                if (!supported.Contains(Path.GetExtension(af.Name).ToLower()))
+                if (supported.Count(p => p.Extension == Path.GetExtension(af.Name).ToLower()) < 1)
                     continue;
                 audioItems.Add(new DecryptAudioItem {
                     File = af.Name,

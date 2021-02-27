@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using cnzhnet.music_decrypt.Models;
 
 namespace cnzhnet.music_decrypt.Services
 {
     /// <summary>
-    /// 用于实现 *.kwm 酷我音乐无损加密格式的音乐破解.
+    /// 用于实现 *.kwm 酷我音乐加密格式的音频解密.
     /// </summary>
     public class KwmAudioDecrypter : AudioDecrypter
     {
@@ -21,7 +17,6 @@ namespace cnzhnet.music_decrypt.Services
         /// </summary>
         public KwmAudioDecrypter() : base()
         {
-            _doWorking = false;
             kwm_headers = new byte[16] { 0x79, 0x65, 0x65, 0x6c, 0x69, 0x6f, 0x6e, 0x2d, 0x6b, 0x75, 0x77, 0x6f, 0x2d, 0x74, 0x6d, 0x65 };
         }
 
@@ -71,7 +66,6 @@ namespace cnzhnet.music_decrypt.Services
                 else
                     tmpEx = Ex;
             }
-            Interlocked.Exchange(ref _doWorking, false);
             if (!UseMultithreaded && tmpEx != null)
                 throw tmpEx;
         }
@@ -107,7 +101,7 @@ namespace cnzhnet.music_decrypt.Services
             for (; i < find_key_maxlen; ++i)
             {
                 Source.Read(key, 0, 32);
-                if (CompareBytes(key, old_key))
+                if (BytesEqual(key, 0, old_key, 0, 32))
                 {
                     foundKey = true;
                     break;
