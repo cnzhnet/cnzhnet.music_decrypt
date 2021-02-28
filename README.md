@@ -1,7 +1,12 @@
-酷我音乐 kwm 加密音频解密工具，可用此源码扩展其它 app 加密格式的支持.    
+音乐 app 会员下载的无损音乐解密工具.   
 ## 目录说明    
 - publish-bin 已编译多平台的可执行程序发布目标.   
 - source 项目源代码目录   
+### 支持的格式      
+- 网易云    *.ncm  已测试通过.      
+- 酷我音乐  *.wma  已测试通过.      
+- QQ音乐    *.qmc0/*.qmc3/*.mflac/*.qmcflac  无样本未测试      
+- 酷狗音乐  *.kgm/*.kgma/*.vpr   无样本未测试           
 ### Windows平台   
 1.运行程序需首先安装 .NET Desktop Runtime 5.0.3，    
   [64位下载地址](https://download.visualstudio.microsoft.com/download/pr/c6541c87-42f2-4c5d-b6db-2df0dade5e00/13e89a5fec3ddb224cd93dd18b0761ff/windowsdesktop-runtime-5.0.3-win-x64.exe)     

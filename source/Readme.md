@@ -1,5 +1,9 @@
 ## 项目说明  
-  各种云音乐 app 会员下载的无损音乐有可能碰到被加密的情况，这给喜欢存在本地或拷到汽车中播放带来一定麻烦。我在使用用酷我音乐时就碰到上述问题，故创建此项目，欢迎众猿友为除酷我音乐外其它app（如：QQ音乐、网易云音乐等）厂商的加密音频的破解添砖加瓦！  
+  音乐 app 会员下载的无损音乐解密    
+  - 网易云音乐(ncm)测试通过.参考：https://github.com/real-zony/ncmdump/tree/master/NCMToMp3    
+  - 酷我音乐(kwm)测试通过.
+  - 酷狗音乐（kgm/kgma/vpr）解密未测试，因无样本文件，参考：https://github.com/unlock-music/cli/tree/master/algo    
+  - QQ音乐（qmc0/qmc3/mflac/qmcflac）解密未测试，因无样本文件，参考：https://github.com/MegrezZhu/qmcdump/tree/master/src
    
 ## 开发环境说明  
 IDE:  Visual Studio 2019 16.8.6   
