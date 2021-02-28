@@ -10,7 +10,7 @@
 		<OutputType>WinExe</OutputType>
 		<UseWindowsForms>true</UseWindowsForms>
 		<DefineConstants>platform_windows</DefineConstants>
-    <RuntimeIdentifier>win-x86</RuntimeIdentifier>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <PublishSingleFile>true</PublishSingleFile>
 	</PropertyGroup>
 
@@ -36,9 +36,14 @@
   
 	<PropertyGroup Condition="'$(TargetFramework)' == 'net5.0'">
 		<OutputType>Exe</OutputType>
-		<RuntimeIdentifier>linux-x64</RuntimeIdentifier>
+		<RuntimeIdentifier>osx-x64</RuntimeIdentifier>
 		<RuntimeIdentifiers>linux-x64;rhel-x64;osx-x64</RuntimeIdentifiers>
 	</PropertyGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
+    <PackageReference Include="System.Drawing.Common" Version="5.0.1" />
+	  <PackageReference Include="System.Resources.Extensions" Version="5.0.0" />
+	</ItemGroup>
   
 	<ItemGroup>
 	  <Compile Update="DefaultResource.Designer.cs">

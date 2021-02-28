@@ -1,4 +1,5 @@
 ﻿
+#if platform_windows
 namespace cnzhnet.music_decrypt.Views
 {
     partial class AboutForm
@@ -21,7 +22,7 @@ namespace cnzhnet.music_decrypt.Views
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
+#region Windows Form Designer generated code
 
         /// <summary>
         /// Required method for Designer support - do not modify
@@ -171,7 +172,7 @@ namespace cnzhnet.music_decrypt.Views
 
         }
 
-        #endregion
+#endregion
 
         private System.Windows.Forms.Panel headPanel;
         private System.Windows.Forms.PictureBox cnzhnetIcon;
@@ -184,3 +185,4 @@ namespace cnzhnet.music_decrypt.Views
         private System.Windows.Forms.Label labelVersion;
     }
 }
+#endif

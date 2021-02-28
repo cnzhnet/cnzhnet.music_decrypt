@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if platform_windows
+using System;
 using System.Text;
 using System.Diagnostics;
 using System.Windows.Forms;
@@ -43,3 +44,4 @@ namespace cnzhnet.music_decrypt.Views
         }
     }
 }
+#endif

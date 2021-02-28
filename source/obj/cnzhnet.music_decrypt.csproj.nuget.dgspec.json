@@ -8,7 +8,7 @@
       "version": "1.0.2",
       "restore": {
         "projectUniqueName": "D:\\我的Windows\\Documents\\Visual Studio 2019\\Projects\\cnzhnet.music_decrypt\\source\\cnzhnet.music_decrypt.csproj",
-        "projectName": "cmdt-windows-x86",
+        "projectName": "cmdt-windows-x64",
         "projectPath": "D:\\我的Windows\\Documents\\Visual Studio 2019\\Projects\\cnzhnet.music_decrypt\\source\\cnzhnet.music_decrypt.csproj",
         "packagesPath": "C:\\Users\\cnzhnet\\.nuget\\packages\\",
         "outputPath": "D:\\我的Windows\\Documents\\Visual Studio 2019\\Projects\\cnzhnet.music_decrypt\\source\\obj\\",
@@ -51,15 +51,15 @@
           "warn": true,
           "downloadDependencies": [
             {
-              "name": "Microsoft.AspNetCore.App.Runtime.win-x86",
+              "name": "Microsoft.AspNetCore.App.Runtime.win-x64",
               "version": "[5.0.3, 5.0.3]"
             },
             {
-              "name": "Microsoft.NETCore.App.Runtime.win-x86",
+              "name": "Microsoft.NETCore.App.Runtime.win-x64",
               "version": "[5.0.3, 5.0.3]"
             },
             {
-              "name": "Microsoft.WindowsDesktop.App.Runtime.win-x86",
+              "name": "Microsoft.WindowsDesktop.App.Runtime.win-x64",
               "version": "[5.0.3, 5.0.3]"
             }
           ],
@@ -75,7 +75,7 @@
         }
       },
       "runtimes": {
-        "win-x86": {
+        "win-x64": {
           "#import": []
         }
       }

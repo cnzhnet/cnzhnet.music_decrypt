@@ -1,12 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "dZIANk2UrYVf5hueB8Cvx9LQHpehnLzR8Jh4TOPuU/aeJuvrWH+mxvpoN3ASAYDQ1AuALrjY3qTEelR2nvQ2MQ==",
+  "dgSpecHash": "4ARRK+aJHQQ+stqcUrDk4Rm4XM53lm5vcsSbLmxUbWTEAX7Le3DgmdbOxWhdAWOZWwxoiN/NlQSr8PMOgMRiJw==",
   "success": true,
   "projectFilePath": "D:\\我的Windows\\Documents\\Visual Studio 2019\\Projects\\cnzhnet.music_decrypt\\source\\cnzhnet.music_decrypt.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\cnzhnet\\.nuget\\packages\\microsoft.windowsdesktop.app.runtime.win-x86\\5.0.3\\microsoft.windowsdesktop.app.runtime.win-x86.5.0.3.nupkg.sha512",
-    "C:\\Users\\cnzhnet\\.nuget\\packages\\microsoft.netcore.app.runtime.win-x86\\5.0.3\\microsoft.netcore.app.runtime.win-x86.5.0.3.nupkg.sha512",
-    "C:\\Users\\cnzhnet\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.win-x86\\5.0.3\\microsoft.aspnetcore.app.runtime.win-x86.5.0.3.nupkg.sha512"
+    "C:\\Users\\cnzhnet\\.nuget\\packages\\microsoft.windowsdesktop.app.runtime.win-x64\\5.0.3\\microsoft.windowsdesktop.app.runtime.win-x64.5.0.3.nupkg.sha512",
+    "C:\\Users\\cnzhnet\\.nuget\\packages\\microsoft.netcore.app.runtime.win-x64\\5.0.3\\microsoft.netcore.app.runtime.win-x64.5.0.3.nupkg.sha512",
+    "C:\\Users\\cnzhnet\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.win-x64\\5.0.3\\microsoft.aspnetcore.app.runtime.win-x64.5.0.3.nupkg.sha512"
   ],
   "logs": []
 }
