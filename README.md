@@ -4,7 +4,7 @@
 - source 项目源代码目录   
 ### 支持的格式      
 - 网易云    *.ncm  已测试通过.      
-- 酷我音乐  *.wma  已测试通过.      
+- 酷我音乐  *.kwm  已测试通过.      
 - QQ音乐    *.qmc0/*.qmc3/*.mflac/*.qmcflac  无样本未测试      
 - 酷狗音乐  *.kgm/*.kgma/*.vpr   无样本未测试           
 ### Windows平台   
