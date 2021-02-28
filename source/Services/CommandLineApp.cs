@@ -29,6 +29,7 @@ namespace cnzhnet.music_decrypt.Services
             AudioDecrypter.RegisterDecrypter(AudioSupported.Create(".mflac", "QQ音乐", typeof(QmcAudioDecrypter)));
             AudioDecrypter.RegisterDecrypter(AudioSupported.Create(".qmcflac", "QQ音乐", typeof(QmcAudioDecrypter)));
             AudioDecrypter.RegisterDecrypter(AudioSupported.Create(".kgm", "酷狗音乐", typeof(KgmAudioDecrypter)));
+            AudioDecrypter.RegisterDecrypter(AudioSupported.Create(".kgma", "酷狗音乐", typeof(KgmAudioDecrypter)));
             AudioDecrypter.RegisterDecrypter(AudioSupported.Create(".vpr", "酷狗音乐", typeof(KgmAudioDecrypter)));
         }
 

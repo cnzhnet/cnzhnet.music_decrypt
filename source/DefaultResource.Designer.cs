@@ -61,6 +61,16 @@ namespace cnzhnet.music_decrypt {
         }
         
         /// <summary>
+        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Bitmap cnzhnet_icon {
+            get {
+                object obj = ResourceManager.GetObject("cnzhnet_icon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   查找 System.Byte[] 类型的本地化资源。
         /// </summary>
         internal static byte[] kgm_mask {

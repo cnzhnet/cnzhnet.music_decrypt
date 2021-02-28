@@ -64,7 +64,7 @@ namespace cnzhnet.music_decrypt.Services
                 {
                     rlen = Source.Read(buffer, 0, buffer.Length);
                     for (int i = 0; i < rlen; ++i)
-                        buffer[i] ^= GetKey(offset + i, key);
+                        buffer[i] ^= GetKeyValue(offset + i, key);
                     offset += rlen;
                     Output.Write(buffer, 0, rlen);
                 }
@@ -92,7 +92,7 @@ namespace cnzhnet.music_decrypt.Services
         /// <param name="v">字节在音频流中的位置.</param>
         /// <param name="key">密钥键数组.</param>
         /// <returns></returns>
-        private byte GetKey(int v, byte[] key)
+        private byte GetKeyValue(int v, byte[] key)
         {
             if (v >= 0)
             {

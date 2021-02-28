@@ -53,14 +53,14 @@ namespace cnzhnet.music_decrypt.Services
             {
                 bool extVpr = Path.GetExtension(item.File).ToLower() == ".vpr";
                 ValidationThrowException(extVpr);
-                int headLen = ReadInt32(Source);                
-                byte[] key1 = new byte[17];
+                int headLen = ReadInt32(Source);           
                 byte[] maskV2 = global::cnzhnet.music_decrypt.DefaultResource.kgm_mask;
-                Source.Seek(8, SeekOrigin.Current); // 流中的第 28 个字节开始.
-                Source.Read(key1, 0, 10);
-                int i = 10;
+                int i = 0;
+                byte[] key1 = new byte[17];
                 for (; i < key1.Length; ++i)
                     key1[i] = 0;
+                Source.Seek(8, SeekOrigin.Current); // 流中的第 28 个字节开始.
+                Source.Read(key1, 0, 16);
                 Source.Seek(headLen, SeekOrigin.Begin);
                 Output.Position = 0;
                 byte[] buffer = new byte[1024];
