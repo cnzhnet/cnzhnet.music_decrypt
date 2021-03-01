@@ -1,4 +1,5 @@
 音乐 app 会员下载的无损音乐解密工具.   
+百度网盘永久分享链接：链接: https://pan.baidu.com/s/1BndQ4iguYTmI-YkXUcpCZQ 提取码: xqvi
 ## 目录说明    
 - publish-bin 已编译多平台的可执行程序发布目标.   
 - source 项目源代码目录   
