@@ -30,34 +30,30 @@ namespace cnzhnet.music_decrypt.Services
             try
             {
                 Source.Position = 0;
-                byte[] buffer = new byte[1024];
+                byte[] buffer = new byte[4096];
                 Source.Read(buffer, 0, buffer.Length);
                 if (!BytesEqual(kwm_headers, 0, buffer, 0, kwm_headers.Length))
                     throw new Exception("无效的 kwm 文件.");
 
-                long processed = 1024;
+                double progressBytes = Convert.ToDouble(Source.Length - 1024);
                 byte[] key = FindDecryptKey();
                 Source.Position = 1024;
                 Output.Position = 0;
-                int i, readLen;                
+                int processed = 0, i, readLen;                
                 do
                 {
                     readLen = Source.Read(buffer, 0, buffer.Length);
+                    if (readLen < 1)
+                        break;
+
                     for (i = 0; i < readLen; ++i)
                         buffer[i] ^= key[i & 0x1f];
                     Output.Write(buffer, 0, readLen);
                     processed += readLen;
+                    OnProgress(item, (float)(processed / progressBytes * 100));
                 }
-                while (processed < Source.Length);
+                while (readLen > 0);
                 Output.Flush();
-                // 获取音频的格式.
-                Output.Position = 0;
-                Output.Read(buffer, 0, buffer.Length);
-                item.OutputExt = GetAudioExt(buffer, 0);
-                Output.Position = 0;
-                
-                if (UseMultithreaded)
-                    OnCompleted(new CompletedEventArgs(true, item));
             }
             catch (Exception Ex)
             {

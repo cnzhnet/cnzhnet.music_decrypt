@@ -19,6 +19,7 @@ namespace cnzhnet.music_decrypt.Views
         private BindingList<DecryptAudioItem> audioItems;
         private SynchronizationContext syncContext;
         private int processed;
+        private bool allowedQuit;
 
         /// <summary>
         /// 创建主窗口实例.
@@ -27,6 +28,7 @@ namespace cnzhnet.music_decrypt.Views
         {
             InitializeComponent();
 
+            allowedQuit = true;
             audioItems = new BindingList<DecryptAudioItem>();
             dataGridView1.DataSource = audioItems;
         }
@@ -45,6 +47,7 @@ namespace cnzhnet.music_decrypt.Views
             AudioDecrypter.RegisterDecrypter(AudioSupported.Create(".ncm", "网易云音乐", typeof(NcmAudioDecrypter)));
             AudioDecrypter.RegisterDecrypter(AudioSupported.Create(".qmc0", "QQ音乐", typeof(QmcAudioDecrypter)));
             AudioDecrypter.RegisterDecrypter(AudioSupported.Create(".qmc3", "QQ音乐", typeof(QmcAudioDecrypter)));
+            AudioDecrypter.RegisterDecrypter(AudioSupported.Create(".qmcogg", "QQ音乐", typeof(QmcAudioDecrypter)));
             AudioDecrypter.RegisterDecrypter(AudioSupported.Create(".mflac", "QQ音乐", typeof(QmcAudioDecrypter)));
             AudioDecrypter.RegisterDecrypter(AudioSupported.Create(".qmcflac", "QQ音乐", typeof(QmcAudioDecrypter)));
             AudioDecrypter.RegisterDecrypter(AudioSupported.Create(".kgm", "酷狗音乐", typeof(KgmAudioDecrypter)));
@@ -60,6 +63,15 @@ namespace cnzhnet.music_decrypt.Views
                 filterRight.Append($";*{supporteds[i].Extension}");
             }
             openFileDialog1.Filter = $"{filterLeft}|{filterRight}";
+        }
+        /// <summary>
+        /// 在解密任务完成之前禁止退出.
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+            e.Cancel = !allowedQuit;
         }
         /// <summary>
         /// 添加文件.
@@ -116,7 +128,8 @@ namespace cnzhnet.music_decrypt.Views
             if (processed >= audioItems.Count) // 列表中的所有音频皆已处理完成时.
             {
                 MessageBox.Show($"已处理完成 {processed} 加密个音频，处理情况见列表.", "任务完成", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                bottomPanel.Enabled = true;
+                UiEnable();
+                allowedQuit = true;
                 return;
             }
             DecryptAudioItem item;
@@ -133,7 +146,11 @@ namespace cnzhnet.music_decrypt.Views
                 }
             }
             while (decrypter == null);
+            dataGridView1.Rows[processed].Selected = true;
+            progressBar1.Value = 0;
             // 准备解密支持的加密音频.
+            decrypter.Progress -= Decrypter_Progress;
+            decrypter.Progress += Decrypter_Progress;
             decrypter.Completed -= Decrypter_Completed;
             decrypter.Completed += Decrypter_Completed;
             decrypter.Source = File.Open(item.FullPath, FileMode.Open, FileAccess.Read, FileShare.Read);
@@ -146,6 +163,18 @@ namespace cnzhnet.music_decrypt.Views
             decrypter.Output.Position = 0;
             decrypter.Decrypt(item); // 解密音频.
         }
+
+        /// <summary>
+        /// 更新界面上的解密进度提示.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="item"></param>
+        /// <param name="progress"></param>
+        private void Decrypter_Progress(IAudioDecrypter sender, DecryptAudioItem item, float progress)
+        {
+            syncContext.Send((state) => progressBar1.Value = (int)progress, null);
+        }
+
         /// <summary>
         /// 解密码完成的事件处理程序.
         /// </summary>
@@ -156,31 +185,27 @@ namespace cnzhnet.music_decrypt.Views
             sender.Source?.Close();
             sender.Source?.Dispose();
             sender.Source = null;
-            sender.Output?.Flush();
             sender.Output?.Close();
             sender.Output?.Dispose();
             sender.Output = null;
             // 更新当前解密项的列表中的显示状态.
             DecryptAudioItem item = e.Item;
             int index = audioItems.IndexOf(item);
-            if (item != null)
+            if (e.Success)
             {
-                if (e.Success)
+                item.Status = "已解密";
+                if (!string.IsNullOrEmpty(item.OutputExt))
                 {
-                    item.Status = "已解密";
-                    if (!string.IsNullOrEmpty(item.OutputExt))
-                    {
-                        string tmpPath = item.Output;
-                        item.Output = $"{Path.Combine(Path.GetDirectoryName(tmpPath), Path.GetFileNameWithoutExtension(item.File))}{item.OutputExt}";
-                        File.Move(tmpPath, item.Output, true);
-                    }
+                    string tmpPath = item.Output;
+                    item.Output = $"{Path.Combine(Path.GetDirectoryName(tmpPath), Path.GetFileNameWithoutExtension(item.File))}{item.OutputExt}";
+                    File.Move(tmpPath, item.Output, true);
                 }
-                else
-                {
-                    item.Status = $"解密错误：{e.Error.Message}";
-                    File.Delete(item.Output);
-                    item.Output = null;
-                }
+            }
+            else
+            {
+                item.Status = $"解密错误：{e.Error.Message}";
+                File.Delete(item.Output);
+                item.Output = null;
             }
             syncContext.Send((state) => {
                 dataGridView1.InvalidateRow((int)state);
@@ -206,8 +231,21 @@ namespace cnzhnet.music_decrypt.Views
             }
 
             Interlocked.Exchange(ref processed, 0);
-            bottomPanel.Enabled = false;
+            UiEnable(false);
+            allowedQuit = false;
             DecryptItem();
+        }
+        /// <summary>
+        /// 启用或禁用用户按钮.
+        /// </summary>
+        /// <param name="enabled"></param>
+        private void UiEnable(bool enabled = true)
+        {
+            outputDir.Enabled = enabled;
+            btnBrowser.Enabled = enabled;
+            btnAddFile.Enabled = enabled;
+            btnRemove.Enabled = enabled;
+            btnDecrypt.Enabled = enabled;
         }
 
         /// <summary>

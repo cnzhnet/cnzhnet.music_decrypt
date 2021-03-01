@@ -5,8 +5,8 @@
 ### 支持的格式      
 - 网易云    *.ncm  已测试通过.      
 - 酷我音乐  *.kwm  已测试通过.      
-- QQ音乐    *.qmc0/*.qmc3/*.mflac/*.qmcflac  无样本未测试      
-- 酷狗音乐  *.kgm/*.kgma/*.vpr   无样本未测试           
+- QQ音乐    *.qmc0/*.qmc3/*.mflac/*.qmcflac  已测试通过      
+- 酷狗音乐  *.kgm/*.kgma/*.vpr   已测试通过，支持最大 1.08GB 的音频文件           
 ### Windows平台   
 1.运行程序需首先安装 .NET Desktop Runtime 5.0.3，    
   [64位下载地址](https://download.visualstudio.microsoft.com/download/pr/c6541c87-42f2-4c5d-b6db-2df0dade5e00/13e89a5fec3ddb224cd93dd18b0761ff/windowsdesktop-runtime-5.0.3-win-x64.exe)     

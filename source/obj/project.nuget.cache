@@ -1,12 +1,20 @@
 {
   "version": 2,
-  "dgSpecHash": "4ARRK+aJHQQ+stqcUrDk4Rm4XM53lm5vcsSbLmxUbWTEAX7Le3DgmdbOxWhdAWOZWwxoiN/NlQSr8PMOgMRiJw==",
+  "dgSpecHash": "kSNqm8WI1GhLCOppQ1KT5pqvpdz103YxyDb7x1fbNaKD8vluysJ9swHlxhcc3ziN07/0LDvSnRDTx0kpnCsDgw==",
   "success": true,
   "projectFilePath": "D:\\我的Windows\\Documents\\Visual Studio 2019\\Projects\\cnzhnet.music_decrypt\\source\\cnzhnet.music_decrypt.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\cnzhnet\\.nuget\\packages\\microsoft.windowsdesktop.app.runtime.win-x64\\5.0.3\\microsoft.windowsdesktop.app.runtime.win-x64.5.0.3.nupkg.sha512",
-    "C:\\Users\\cnzhnet\\.nuget\\packages\\microsoft.netcore.app.runtime.win-x64\\5.0.3\\microsoft.netcore.app.runtime.win-x64.5.0.3.nupkg.sha512",
-    "C:\\Users\\cnzhnet\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.win-x64\\5.0.3\\microsoft.aspnetcore.app.runtime.win-x64.5.0.3.nupkg.sha512"
+    "C:\\Users\\cnzhnet\\.nuget\\packages\\microsoft.netcore.platforms\\5.0.0\\microsoft.netcore.platforms.5.0.0.nupkg.sha512",
+    "C:\\Users\\cnzhnet\\.nuget\\packages\\microsoft.win32.systemevents\\5.0.0\\microsoft.win32.systemevents.5.0.0.nupkg.sha512",
+    "C:\\Users\\cnzhnet\\.nuget\\packages\\sharpcompress\\0.28.1\\sharpcompress.0.28.1.nupkg.sha512",
+    "C:\\Users\\cnzhnet\\.nuget\\packages\\system.drawing.common\\5.0.1\\system.drawing.common.5.0.1.nupkg.sha512",
+    "C:\\Users\\cnzhnet\\.nuget\\packages\\system.resources.extensions\\5.0.0\\system.resources.extensions.5.0.0.nupkg.sha512",
+    "C:\\Users\\cnzhnet\\.nuget\\packages\\microsoft.netcore.app.runtime.osx-x64\\5.0.3\\microsoft.netcore.app.runtime.osx-x64.5.0.3.nupkg.sha512",
+    "C:\\Users\\cnzhnet\\.nuget\\packages\\microsoft.netcore.app.runtime.linux-x64\\5.0.3\\microsoft.netcore.app.runtime.linux-x64.5.0.3.nupkg.sha512",
+    "C:\\Users\\cnzhnet\\.nuget\\packages\\microsoft.netcore.app.host.linux-x64\\5.0.3\\microsoft.netcore.app.host.linux-x64.5.0.3.nupkg.sha512",
+    "C:\\Users\\cnzhnet\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.osx-x64\\5.0.3\\microsoft.aspnetcore.app.runtime.osx-x64.5.0.3.nupkg.sha512",
+    "C:\\Users\\cnzhnet\\.nuget\\packages\\microsoft.netcore.app.host.osx-x64\\5.0.3\\microsoft.netcore.app.host.osx-x64.5.0.3.nupkg.sha512",
+    "C:\\Users\\cnzhnet\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.linux-x64\\5.0.3\\microsoft.aspnetcore.app.runtime.linux-x64.5.0.3.nupkg.sha512"
   ],
   "logs": []
 }

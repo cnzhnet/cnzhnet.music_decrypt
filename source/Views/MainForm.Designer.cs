@@ -36,6 +36,7 @@ namespace cnzhnet.music_decrypt.Views
             this.btnRemove = new System.Windows.Forms.Button();
             this.btnAddFile = new System.Windows.Forms.Button();
             this.contentPanel = new System.Windows.Forms.Panel();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.btnBrowser = new System.Windows.Forms.Button();
             this.outputDir = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -61,7 +62,7 @@ namespace cnzhnet.music_decrypt.Views
             this.bottomPanel.Controls.Add(this.btnRemove);
             this.bottomPanel.Controls.Add(this.btnAddFile);
             this.bottomPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.bottomPanel.Location = new System.Drawing.Point(0, 380);
+            this.bottomPanel.Location = new System.Drawing.Point(0, 435);
             this.bottomPanel.Name = "bottomPanel";
             this.bottomPanel.Size = new System.Drawing.Size(626, 56);
             this.bottomPanel.TabIndex = 0;
@@ -122,6 +123,7 @@ namespace cnzhnet.music_decrypt.Views
             // contentPanel
             // 
             this.contentPanel.BackColor = System.Drawing.Color.White;
+            this.contentPanel.Controls.Add(this.progressBar1);
             this.contentPanel.Controls.Add(this.btnBrowser);
             this.contentPanel.Controls.Add(this.outputDir);
             this.contentPanel.Controls.Add(this.label2);
@@ -130,13 +132,24 @@ namespace cnzhnet.music_decrypt.Views
             this.contentPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.contentPanel.Location = new System.Drawing.Point(0, 0);
             this.contentPanel.Name = "contentPanel";
-            this.contentPanel.Size = new System.Drawing.Size(626, 380);
+            this.contentPanel.Size = new System.Drawing.Size(626, 435);
             this.contentPanel.TabIndex = 1;
+            // 
+            // progressBar1
+            // 
+            this.progressBar1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.progressBar1.BackColor = System.Drawing.Color.White;
+            this.progressBar1.Location = new System.Drawing.Point(12, 397);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(602, 23);
+            this.progressBar1.Step = 1;
+            this.progressBar1.TabIndex = 5;
             // 
             // btnBrowser
             // 
             this.btnBrowser.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnBrowser.Location = new System.Drawing.Point(541, 333);
+            this.btnBrowser.Location = new System.Drawing.Point(541, 358);
             this.btnBrowser.Name = "btnBrowser";
             this.btnBrowser.Size = new System.Drawing.Size(75, 25);
             this.btnBrowser.TabIndex = 4;
@@ -148,17 +161,17 @@ namespace cnzhnet.music_decrypt.Views
             // 
             this.outputDir.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.outputDir.Location = new System.Drawing.Point(86, 334);
+            this.outputDir.Location = new System.Drawing.Point(12, 359);
             this.outputDir.Name = "outputDir";
             this.outputDir.PlaceholderText = "解密后的输出位置.";
-            this.outputDir.Size = new System.Drawing.Size(449, 23);
+            this.outputDir.Size = new System.Drawing.Size(523, 23);
             this.outputDir.TabIndex = 3;
             // 
             // label2
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 337);
+            this.label2.Location = new System.Drawing.Point(12, 339);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(68, 17);
             this.label2.TabIndex = 2;
@@ -182,12 +195,13 @@ namespace cnzhnet.music_decrypt.Views
             this.ColumnPath,
             this.OutextColumn});
             this.dataGridView1.Location = new System.Drawing.Point(12, 31);
+            this.dataGridView1.MultiSelect = false;
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.RowHeadersVisible = false;
             this.dataGridView1.RowTemplate.Height = 25;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView1.Size = new System.Drawing.Size(604, 284);
+            this.dataGridView1.Size = new System.Drawing.Size(604, 295);
             this.dataGridView1.TabIndex = 1;
             // 
             // ColumnId
@@ -205,6 +219,7 @@ namespace cnzhnet.music_decrypt.Views
             this.ColumnStatus.HeaderText = "状态";
             this.ColumnStatus.Name = "ColumnStatus";
             this.ColumnStatus.ReadOnly = true;
+            this.ColumnStatus.Width = 120;
             // 
             // ColumnFile
             // 
@@ -257,7 +272,7 @@ namespace cnzhnet.music_decrypt.Views
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(626, 436);
+            this.ClientSize = new System.Drawing.Size(626, 491);
             this.Controls.Add(this.contentPanel);
             this.Controls.Add(this.bottomPanel);
             this.MaximizeBox = false;
@@ -286,12 +301,13 @@ namespace cnzhnet.music_decrypt.Views
         private System.Windows.Forms.Button btnAddFile;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.Button btnAbout;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnId;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnStatus;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnFile;
         private System.Windows.Forms.DataGridViewTextBoxColumn ColumnPath;
         private System.Windows.Forms.DataGridViewTextBoxColumn OutextColumn;
-        private System.Windows.Forms.Button btnAbout;
+        private System.Windows.Forms.ProgressBar progressBar1;
     }
 }
 #endif

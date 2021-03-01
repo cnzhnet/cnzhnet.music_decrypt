@@ -26,6 +26,11 @@ namespace cnzhnet.music_decrypt.Services
         bool UseMultithreaded { get; set; }
 
         /// <summary>
+        /// 用于提示解密进度的事件.
+        /// </summary>
+        event ProgressEventHandler Progress;
+
+        /// <summary>
         /// 当解密任务终止或执行完成时发生此事件.
         /// </summary>
         event CompletedEventHandler Completed;
@@ -74,4 +79,11 @@ namespace cnzhnet.music_decrypt.Services
     /// <param name="sender"></param>
     /// <param name="e"></param>
     public delegate void CompletedEventHandler(IAudioDecrypter sender, CompletedEventArgs e);
+    /// <summary>
+    /// 用于执行解密进度提示的委托.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="item"></param>
+    /// <param name="progress"></param>
+    public delegate void ProgressEventHandler(IAudioDecrypter sender, DecryptAudioItem item, float progress);
 }

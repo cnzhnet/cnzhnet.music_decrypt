@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Threading.Tasks;
+using SharpCompress.Compressors.Xz;
 
 namespace cnzhnet.music_decrypt.Services
 {
@@ -54,41 +55,40 @@ namespace cnzhnet.music_decrypt.Services
                 bool extVpr = Path.GetExtension(item.File).ToLower() == ".vpr";
                 ValidationThrowException(extVpr);
                 int headLen = ReadInt32(Source);           
-                byte[] maskV2 = global::cnzhnet.music_decrypt.DefaultResource.kgm_mask;
-                int i = 0;
+                byte[] maskV2 = GetMaskV2();
                 byte[] key1 = new byte[17];
-                for (; i < key1.Length; ++i)
-                    key1[i] = 0;
                 Source.Seek(8, SeekOrigin.Current); // 流中的第 28 个字节开始.
                 Source.Read(key1, 0, 16);
+                key1[16] = 0x00;
                 Source.Seek(headLen, SeekOrigin.Begin);
                 Output.Position = 0;
-                byte[] buffer = new byte[1024];
-                int offset = 0, rlen, pos;
+                byte[] buffer = new byte[4096];
+                double progressBytes = Convert.ToDouble(Source.Length - headLen);
+                int offset = 0, rlen, pos, i;
                 byte med8, mask8;
                 do
                 {
                     rlen = Source.Read(buffer, 0, buffer.Length);
+                    if (rlen < 1)
+                        break;
+
                     for (i = 0; i < rlen; ++i)
                     {
                         pos = offset + i;
                         med8 = (byte)(key1[pos % 17] ^ buffer[i]);
                         med8 ^= (byte)((med8 & 0x0f) << 4);
                         mask8 = (byte)(MaskV2PreDef[pos % 272] ^ maskV2[pos >> 4]);
+                        mask8 ^= (byte)((mask8 & 0x0f) << 4);
                         buffer[i] = (byte)(med8 ^ mask8);
                         if (extVpr)
                             buffer[i] ^= vpr_mask_diff[pos % 17];
                     }
                     offset += rlen;
                     Output.Write(buffer, 0, rlen);
+                    OnProgress(item, (float)(offset / progressBytes * 100));
                 }
                 while (rlen > 0);
                 Output.Flush();
-                // 获取音频的格式.
-                Output.Position = 0;
-                Output.Read(buffer, 0, buffer.Length);
-                item.OutputExt = GetAudioExt(buffer, 0);
-                Output.Position = 0;
             }
             catch (Exception Ex)
             {
@@ -115,6 +115,50 @@ namespace cnzhnet.music_decrypt.Services
                 if (!BytesEqual(buffer, 0, kgm_header, 0, kgm_header.Length))
                     throw new Exception("无效的 kgm 音频.");
             }
+        }
+        /*
+        private byte[] GetMaskV2()
+        {
+            byte[] buffer;
+            using (MemoryStream ms = new MemoryStream())
+            {
+                using (XZInputStream xzStream = new XZInputStream(global::cnzhnet.music_decrypt.DefaultResource.kgm_mask))
+                {
+                    buffer = new byte[2048];
+                    int rlen = 0;
+                    do
+                    {
+                        rlen = xzStream.Read(buffer, 0, buffer.Length);
+                        ms.Write(buffer, 0, rlen);
+                    } while (rlen > 0);
+                    ms.Flush();
+                    buffer = ms.ToArray();
+                }
+            }
+            return buffer;
+        }*/
+        private byte[] GetMaskV2()
+        {
+            byte[] buffer;
+            using (MemoryStream src = new MemoryStream(global::cnzhnet.music_decrypt.DefaultResource.kgm_mask))
+            {
+                using (XZStream xz = new XZStream(src))
+                {
+                    using (MemoryStream dest = new MemoryStream())
+                    {
+                        buffer = new byte[2048];
+                        int rlen = 0;
+                        do
+                        {
+                            rlen = xz.Read(buffer, 0, buffer.Length);
+                            dest.Write(buffer, 0, rlen);
+                        } while (rlen > 0);
+                        dest.Flush();
+                        buffer = dest.ToArray();
+                    }
+                }
+            }
+            return buffer;
         }
     }
 }

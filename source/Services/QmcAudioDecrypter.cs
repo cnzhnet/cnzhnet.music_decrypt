@@ -57,7 +57,12 @@ namespace cnzhnet.music_decrypt.Services
             try
             {
                 byte[] key = FindKey(item);
-                byte[] buffer = new byte[1024];
+                if (key == null)
+                    throw new Exception("未找到密钥.");
+
+                Source.Seek(0, SeekOrigin.Begin);
+                byte[] buffer = new byte[4096];
+                double progressBytes = Convert.ToDouble(Source.Length);
                 int offset = 0, rlen = 0;
                 Output.Position = 0;
                 do
@@ -67,14 +72,10 @@ namespace cnzhnet.music_decrypt.Services
                         buffer[i] ^= GetKeyValue(offset + i, key);
                     offset += rlen;
                     Output.Write(buffer, 0, rlen);
+                    OnProgress(item, (float)(offset / progressBytes * 100));
                 }
                 while (rlen > 0);
                 Output.Flush();
-                // 获取音频的格式.
-                Output.Position = 0;
-                Output.Read(buffer, 0, buffer.Length);
-                item.OutputExt = GetAudioExt(buffer, 0);
-                Output.Position = 0;
             }
             catch (Exception Ex)
             {

@@ -1,37 +1,35 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net5.0-windows</TargetFramework>
+		<TargetFramework>net5.0</TargetFramework>
 		<RootNamespace>cnzhnet.music_decrypt</RootNamespace>
-		<Version>1.0.2.0</Version>
+		<Version>1.0.3.0</Version>
+		<Platforms>AnyCPU;x64;x86</Platforms>
+    <PublishSingleFile>true</PublishSingleFile>
+    <IncludeContentInSingleFile>true</IncludeContentInSingleFile>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)' == 'net5.0-windows'">
 		<OutputType>WinExe</OutputType>
 		<UseWindowsForms>true</UseWindowsForms>
 		<DefineConstants>platform_windows</DefineConstants>
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-    <PublishSingleFile>true</PublishSingleFile>
+    <RuntimeIdentifier>win-x86</RuntimeIdentifier>
 	</PropertyGroup>
 
   <PropertyGroup Condition="'$(RuntimeIdentifier)' == 'win-x64'">
     <AssemblyName>cmdt-windows-x64</AssemblyName>
-    <PublishSingleFile>true</PublishSingleFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(RuntimeIdentifier)' == 'win-x86'">
     <AssemblyName>cmdt-windows-x86</AssemblyName>
-    <PublishSingleFile>true</PublishSingleFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(RuntimeIdentifier)' == 'linux-x64'">
     <AssemblyName>cmdt-linux-x64</AssemblyName>
-    <PublishSingleFile>true</PublishSingleFile>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(RuntimeIdentifier)' == 'osx-x64'">
     <AssemblyName>cmdt-osx-x64</AssemblyName>
-    <PublishSingleFile>true</PublishSingleFile>
   </PropertyGroup>
   
 	<PropertyGroup Condition="'$(TargetFramework)' == 'net5.0'">
@@ -44,6 +42,11 @@
     <PackageReference Include="System.Drawing.Common" Version="5.0.1" />
 	  <PackageReference Include="System.Resources.Extensions" Version="5.0.0" />
 	</ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SharpCompress" Version="0.28.1" />
+    <!--<PackageReference Include="XZ.NET-netstandard" Version="2.0.0.2" />-->
+  </ItemGroup>
   
 	<ItemGroup>
 	  <Compile Update="DefaultResource.Designer.cs">

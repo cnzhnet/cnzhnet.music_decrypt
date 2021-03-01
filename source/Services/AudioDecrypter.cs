@@ -21,7 +21,9 @@ namespace cnzhnet.music_decrypt.Services
             new AudioPeHeader(".aac", new byte[2] { 0xff, 0xf9 }),
             new AudioPeHeader(".amr", new byte[5] { 0x23, 0x21, 0x41, 0x4d, 0x52 }),
             new AudioPeHeader(".mp3",  new byte[3] { 0x49, 0x44, 0x33 }),
+            new AudioPeHeader(".dff", new byte[4] { 0x44, 0x53, 0x44, 0x20 }), // DSD HIFI音频.
             new AudioPeHeader(".flac", new byte[4] { 0x66, 0x4c, 0x61, 0x43 }),
+            new AudioPeHeader(".ape", new byte[9] { 0x4d, 0x41, 0x43, 0x20, 0x96, 0x0f, 0x00, 0x00, 0x34 }),
             new AudioPeHeader(".ogg",  new byte[4] { 0x4f, 0x67, 0x67, 0x53 }),
             new AudioPeHeader(".m4a",  new byte[4] { 0x66, 0x74, 0x79, 0x70 }),
             new AudioPeHeader(".wav",  new byte[4] { 0x52, 0x49, 0x46, 0x46 }),
@@ -59,6 +61,18 @@ namespace cnzhnet.music_decrypt.Services
         public bool DoWorking => (bool)_doWorking;
 
         /// <summary>
+        /// 用于提示解密进度的事件.
+        /// </summary>
+        public event ProgressEventHandler Progress;
+
+        /// <summary>
+        /// 用于触发 <see cref="Progress"/> 事件.
+        /// </summary>
+        /// <param name="item">当前解密的音频.</param>
+        /// <param name="progress">解密完成进度.</param>
+        protected virtual void OnProgress(DecryptAudioItem item, float progress) => Progress?.Invoke(this, item, progress);
+
+        /// <summary>
         /// 当解密任务终止或执行完成时发生此事件.
         /// </summary>
         public event CompletedEventHandler Completed;
@@ -67,11 +81,7 @@ namespace cnzhnet.music_decrypt.Services
         /// 用于触发 <see cref="Completed"/> 事件.
         /// </summary>
         /// <param name="e"></param>
-        protected virtual void OnCompleted(CompletedEventArgs e)
-        {
-            Interlocked.Exchange(ref _doWorking, false);
-            Completed?.Invoke(this, e);
-        }
+        protected virtual void OnCompleted(CompletedEventArgs e) => Completed?.Invoke(this, e);
 
         /// <summary>
         /// 比较两个字节数组中指定部份的数据是否相同.
@@ -109,19 +119,33 @@ namespace cnzhnet.music_decrypt.Services
         }
 
         /// <summary>
-        /// 根据给定的音频文件数据获取音频的格式扩展名.
+        /// 获取音频的格式扩展名.
         /// </summary>
-        /// <param name="buffers">包含音频文件数据的字节数组.</param>
-        /// <param name="offset">从 buffers 的该处开始分析音频类型.</param>
         /// <returns></returns>
-        protected string GetAudioExt(byte[] buffers, int offset)
+        protected string GetAudioExt()
         {
+            byte[] buffer = new byte[32];
+            // 获取音频的格式.
+            Output.Position = 0;
+            Output.Read(buffer, 0, buffer.Length);
+            Output.Position = 0;
             foreach (AudioPeHeader pe in audioHeaders)
             {
-                if (pe.Ext == ".m4a")
-                    offset += 4;
-                if (BytesEqual(pe.Head, 0, buffers, offset, pe.Head.Length))
-                    return pe.Ext;
+                switch (pe.Ext)
+                {
+                    case ".dff":
+                        if (BytesEqual(pe.Head, 0, buffer, 12, pe.Head.Length))
+                            return pe.Ext;
+                        break;
+                    case ".m4a":
+                        if (BytesEqual(pe.Head, 0, buffer, 4, pe.Head.Length))
+                            return pe.Ext;
+                        break;
+                    default:
+                        if (BytesEqual(pe.Head, 0, buffer, 0, pe.Head.Length))
+                            return pe.Ext;
+                        break;
+                }
             }
             return string.Empty;
         }
@@ -144,17 +168,27 @@ namespace cnzhnet.music_decrypt.Services
                 throw new ArgumentNullException(nameof(Source));
             if (Output == null)
                 throw new ArgumentNullException(nameof(Output));
-            if (DoWorking)
-                return;
 
             Interlocked.Exchange(ref _doWorking, true);
             if (UseMultithreaded)
             {
-                Task.Factory.StartNew(() => DoDecrypt(item));
+                Task.Factory.StartNew(() => {
+                    try
+                    {
+                        DoDecrypt(item);
+                        item.OutputExt = GetAudioExt();
+                    }
+                    finally 
+                    {
+                        Interlocked.Exchange(ref _doWorking, false);
+                        OnCompleted(new CompletedEventArgs(true, item));
+                    }
+                });
             }
             else
             {
                 DoDecrypt(item);
+                item.OutputExt = GetAudioExt();
                 Interlocked.Exchange(ref _doWorking, false);
             }
         }

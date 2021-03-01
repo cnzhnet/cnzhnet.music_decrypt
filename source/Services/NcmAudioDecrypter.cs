@@ -30,7 +30,7 @@ namespace cnzhnet.music_decrypt.Services
             Exception tmpEx = null;
             try
             {
-                const int read_size = 1024;
+                const int read_size = 4096;
                 byte[] buffer = new byte[read_size];
                 Source.Read(buffer, 0, 8);
                 if (!BytesEqual(ncm_headers, 0, buffer, 0, 8))
@@ -49,8 +49,9 @@ namespace cnzhnet.music_decrypt.Services
                 int rlen = ReadInt32(Source);
                 if (rlen > 0)
                     Source.Seek(rlen, SeekOrigin.Current);
-                // 解密音频数据.      
-                int i, j;
+                // 解密音频数据.    
+                double progressBytes = Convert.ToDouble(Source.Length - Source.Position);
+                int processed = 0, i, j;
                 Output.Position = 0;
                 while ((rlen = Source.Read(buffer, 0, read_size)) > 0)
                 {
@@ -59,15 +60,11 @@ namespace cnzhnet.music_decrypt.Services
                         j = (byte)((i + 1) & 0xff);
                         buffer[i] ^= keyBox[keyBox[j] + keyBox[(keyBox[j] + j) & 0xff] & 0xff];
                     }
+                    processed += rlen;
                     Output.Write(buffer, 0, rlen);
+                    OnProgress(item, (float)(processed / progressBytes * 100));
                 }
-                // 获取音频的格式.
-                Output.Position = 0;
-                Output.Read(buffer, 0, buffer.Length);
-                item.OutputExt = GetAudioExt(buffer, 0);
-                Output.Position = 0;
-                if (UseMultithreaded)
-                    OnCompleted(new CompletedEventArgs(true, item));
+                Output.Flush();
             }
             catch (Exception Ex)
             {
